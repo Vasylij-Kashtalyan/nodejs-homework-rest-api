@@ -3,16 +3,18 @@ const router = express.Router();
 
 const ctrl = require("../../controllers/contacts");
 
-router.get("/", ctrl.getAll);
+const { ctrlWrapper } = require("../../helpers");
 
-router.get("/:id", ctrl.getById);
+router.get("/", ctrlWrapper(ctrl.getAll));
 
-router.post("/", ctrl.add);
+router.get("/:id", ctrlWrapper(ctrl.getById));
 
-router.put("/:id", ctrl.updateById);
+router.post("/", ctrlWrapper(ctrl.add));
 
-router.patch("/:id/favorite", ctrl.updateByIdFavorite);
+router.put("/:id", ctrlWrapper(ctrl.updateById));
 
-router.delete("/:id", ctrl.removeById);
+router.patch("/:id/favorite", ctrlWrapper(ctrl.updateByIdFavorite));
+
+router.delete("/:id", ctrlWrapper(ctrl.removeById));
 
 module.exports = router;
