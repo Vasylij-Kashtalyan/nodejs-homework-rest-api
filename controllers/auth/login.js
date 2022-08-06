@@ -1,6 +1,9 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
 const { User, schemas } = require("../../models/user");
 const { createError } = require("../../helpers");
-const bcrypt = require("bcryptjs");
+const { SECRET_KEY } = process.env;
 
 const login = async (req, res) => {
   const { error } = schemas.login.validate(req.body);
@@ -14,7 +17,13 @@ const login = async (req, res) => {
   const comparePassword = await bcrypt.compare(password, user.password);
   if (!comparePassword) throw createError(401, "Password wrong");
 
-  const token = "ksdjksd.sldksldk.dfdfd";
+  const payload = {
+    id: user._id,
+  };
+
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "24h" });
+  await User.findByIdAndUpdate(user._id, { token });
+
   res.json({
     token,
   });
